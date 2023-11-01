@@ -1,0 +1,212 @@
+1. Write a C program that contains a string (char pointer) with a value \Hello World'. The program should XOR each character 1 in this string with 0 and display the result.
+
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str[] = "Hello World";
+    int key = 1;
+
+    for (int i = 0; i < strlen(str); i++) {
+        str[i] = str[i] ^ key;
+    }
+
+    printf("Encrypted string: %s\n", str);
+
+    return 0;
+}
+
+
+2. Write a C program that contains a string (char pointer) with a value \Hello World'. The program should AND or and XOR 2 each character in this string with 127 and display the result.
+
+
+#include <stdio.h>
+
+void manipulateString(char *str, int operation) {
+    while (*str) {
+        if (operation == 1) {
+            *str = *str & 127;  // Bitwise AND with 127
+        } else if (operation == 2) {
+            *str = *str ^ 127;  // Bitwise XOR with 127
+        }
+        str++;
+    }
+}
+
+int main() {
+    char text[] = "Hello World";
+    printf("Original: %s\n", text);
+
+    // Perform AND operation
+    manipulateString(text, 1);
+    printf("After AND: %s\n", text);
+
+    // Perform XOR operation
+    manipulateString(text, 2);
+    printf("After XOR: %s\n", text);
+
+    return 0;
+}
+
+
+3. Write a Java program to perform encryption and decryption using Caesar Cipher algorithm
+
+public class CaesarCipher {
+
+    // Encrypts a given message using the Caesar Cipher algorithm
+    public static String encrypt(String message, int key) {
+        StringBuilder encryptedMessage = new StringBuilder();
+        for (char ch : message.toCharArray()) {
+            if (Character.isLetter(ch)) {
+                char base = Character.isLowerCase(ch) ? 'a' : 'A';
+                char encryptedChar = (char) ((ch - base + key) % 26 + base);
+                encryptedMessage.append(encryptedChar);
+            } else {
+                encryptedMessage.append(ch);
+            }
+        }
+        return encryptedMessage.toString();
+    }
+
+    // Decrypts a given message using the Caesar Cipher algorithm
+    public static String decrypt(String message, int key) {
+        return encrypt(message, 26 - key); // Decrypting is like encrypting with negative key
+    }
+
+    public static void main(String[] args) {
+        String originalMessage = "Hello, World!";
+        int key = 3;
+
+        // Encrypt the message
+        String encryptedMessage = encrypt(originalMessage, key);
+        System.out.println("Encrypted: " + encryptedMessage);
+
+        // Decrypt the message
+        String decryptedMessage = decrypt(encryptedMessage, key);
+        System.out.println("Decrypted: " + decryptedMessage);
+    }
+}
+
+
+4. Write a Java program to perform encryption and decryption using Substitution Cipher algorithm
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class SubstitutionCipher {
+
+    private static final String ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String SUBSTITUTION_KEY = "XPMGTDHLYONZBWEARKJUFSCIQV";
+
+    // Encrypts a given message using the Substitution Cipher algorithm
+    public static String encrypt(String message) {
+        StringBuilder encryptedMessage = new StringBuilder();
+        for (char ch : message.toCharArray()) {
+            if (Character.isLetter(ch)) {
+                char base = Character.isLowerCase(ch) ? 'a' : 'A';
+                int index = ch - base;
+                char encryptedChar = SUBSTITUTION_KEY.charAt(index);
+                encryptedMessage.append(encryptedChar);
+            } else {
+                encryptedMessage.append(ch);
+            }
+        }
+        return encryptedMessage.toString();
+    }
+
+    // Decrypts a given message using the Substitution Cipher algorithm
+    public static String decrypt(String message) {
+        StringBuilder decryptedMessage = new StringBuilder();
+        Map<Character, Character> decryptionMap = new HashMap<>();
+        for (int i = 0; i < ALPHABET.length(); i++) {
+            decryptionMap.put(SUBSTITUTION_KEY.charAt(i), ALPHABET.charAt(i));
+        }
+
+        for (char ch : message.toCharArray()) {
+            if (Character.isLetter(ch)) {
+                char base = Character.isLowerCase(ch) ? 'a' : 'A';
+                char decryptedChar = decryptionMap.get(ch);
+                decryptedMessage.append((char) (decryptedChar + (base - 'A')));
+            } else {
+                decryptedMessage.append(ch);
+            }
+        }
+        return decryptedMessage.toString();
+    }
+
+    public static void main(String[] args) {
+        String originalMessage = "HELLO, WORLD!";
+        
+        // Encrypt the message
+        String encryptedMessage = encrypt(originalMessage);
+        System.out.println("Encrypted: " + encryptedMessage);
+
+        // Decrypt the message
+        String decryptedMessage = decrypt(encryptedMessage);
+        System.out.println("Decrypted: " + decryptedMessage);
+    }
+}
+
+
+
+5) Write a Java program to perform encryption and decryption using Hill Cipher algorithm
+
+import java.util.Scanner;
+
+public class HillCipher {
+
+    private static final int MATRIX_SIZE = 2; // Size of the matrix key
+
+    // Encrypts a given message using the Hill Cipher algorithm
+    public static String encrypt(String message, int[][] key) {
+        int messageLength = message.length();
+        int[] messageVector = new int[messageLength];
+        for (int i = 0; i < messageLength; i++) {
+            messageVector[i] = message.charAt(i) - 'A';
+        }
+
+        int[] encryptedVector = new int[messageLength];
+        for (int i = 0; i < messageLength; i += MATRIX_SIZE) {
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                int sum = 0;
+                for (int k = 0; k < MATRIX_SIZE; k++) {
+                    sum += key[j][k] * messageVector[i + k];
+                }
+                encryptedVector[i + j] = sum % 26;
+            }
+        }
+
+        StringBuilder encryptedMessage = new StringBuilder();
+        for (int i : encryptedVector) {
+            encryptedMessage.append((char) (i + 'A'));
+        }
+        return encryptedMessage.toString();
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the key matrix elements (row-wise): ");
+        int[][] key = new int[MATRIX_SIZE][MATRIX_SIZE];
+        for (int i = 0; i < MATRIX_SIZE; i++) {
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                key[i][j] = scanner.nextInt();
+            }
+        }
+        scanner.nextLine(); // Consume the newline
+
+        System.out.print("Enter the message to encrypt (uppercase): ");
+        String message = scanner.nextLine();
+
+        // Make sure the message length is a multiple of MATRIX_SIZE
+        int padding = MATRIX_SIZE - (message.length() % MATRIX_SIZE);
+        for (int i = 0; i < padding; i++) {
+            message += 'X';
+        }
+
+        // Encrypt the message
+        String encryptedMessage = encrypt(message, key);
+        System.out.println("Encrypted: " + encryptedMessage);
+
+        scanner.close();
+    }
+}
